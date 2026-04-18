@@ -26,7 +26,7 @@ public class TileClaimProtector : BasePlugin
 
         if (claimStatus == LandClaimOwner.Other)
         {
-            Capabilities.Get<IPlayerUtil>().PlaySound(evt.EntityId, "gate_chainlink_locked");
+            Capabilities.Get<IPlayerUtil>().PlaySound(evt.EntityId, "ui_denied");
             return HookResult.Handled;
         }
 
