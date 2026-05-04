@@ -11,27 +11,31 @@ public class TileClaimProtector : BasePlugin
     public override string ModuleName => "TileClaimProtector";
     public override string ModuleVersion => "1.0.0";
     public override string ModuleAuthor => "TouchMe-Inc";
-
     public override string ModuleDescription =>
         "Blocks unauthorized access to objects inside other players land claims";
 
+    private IGameUtil _gameUtil;
+    private IPlayerUtil _playerUtil;
+
     protected override void OnLoad()
     {
+        _gameUtil = Capabilities.Get<IGameUtil>();
+        _playerUtil = Capabilities.Get<IPlayerUtil>();
         RegisterEventHandler<TileEntityAccessAttemptEvent>(OnTileEntityAccessAttempt, HookMode.Pre);
     }
 
     private HookResult OnTileEntityAccessAttempt(TileEntityAccessAttemptEvent evt)
     {
-        if (evt.TileEntityType == TileEntityType.Loot &&
-            Capabilities.Get<IGameUtil>().GetEntityType(evt.TileEntityId).Equals("EntityBackpack"))
+        if (evt.TileEntity.Type == TileEntityType.Loot &&
+            _gameUtil.GetEntityType(evt.TileEntity.Id).Equals("EntityBackpack"))
         {
             return HookResult.Continue;
         }
 
-        var claimStatus = Capabilities.Get<IPlayerUtil>().GetClaimOwner(evt.EntityId, evt.TileEntityPosition);
+        var claimStatus = _playerUtil.GetClaimOwner(evt.EntityId, evt.TileEntity.Position);
         if (claimStatus != LandClaimOwner.Other) return HookResult.Continue;
 
-        Capabilities.Get<IPlayerUtil>().PlaySound(evt.EntityId, "ui_denied", 20);
+        _playerUtil.PlaySound(evt.EntityId, "ui_denied", 20);
         return HookResult.Handled;
     }
 }
