@@ -11,6 +11,7 @@ public class TileClaimProtector : BasePlugin
     public override string ModuleName => "TileClaimProtector";
     public override string ModuleVersion => "1.0.0";
     public override string ModuleAuthor => "TouchMe-Inc";
+
     public override string ModuleDescription =>
         "Blocks unauthorized access to objects inside other players land claims";
 
@@ -26,8 +27,9 @@ public class TileClaimProtector : BasePlugin
 
     private HookResult OnTileEntityAccessAttempt(TileEntityAccessAttemptEvent evt)
     {
-        if (evt.TileEntity.Type == TileEntityType.Loot &&
-            _gameUtil.GetEntityType(evt.TileEntity.Id).Equals("EntityBackpack"))
+        if (evt.TileEntity.Type == TileEntityType.Loot
+            && evt.TileEntity.Id != -1
+            && _gameUtil.GetEntityType(evt.TileEntity.Id).Equals("EntityBackpack"))
         {
             return HookResult.Continue;
         }
