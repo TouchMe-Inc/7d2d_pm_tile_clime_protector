@@ -27,6 +27,8 @@ public class TileClaimProtector : BasePlugin
 
     private HookResult OnTileEntityAccessAttempt(TileEntityAccessAttemptEvent evt)
     {
+        if (evt.TileEntity.Type == TileEntityType.VendingMachine) return HookResult.Continue;
+
         if (evt.TileEntity.Type == TileEntityType.Loot
             && evt.TileEntity.Id != -1
             && _gameUtil.GetEntityType(evt.TileEntity.Id).Equals("EntityBackpack"))
